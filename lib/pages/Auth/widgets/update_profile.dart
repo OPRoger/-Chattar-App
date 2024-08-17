@@ -1,14 +1,14 @@
 import 'package:chat_application/widget/primaryButton.dart';
 import 'package:flutter/material.dart';
 
-class UpdateProfile extends StatefulWidget {
-  const UpdateProfile({Key? key}) : super(key: key);
+class UserUpdateProfile extends StatefulWidget {
+  const UserUpdateProfile({Key? key}) : super(key: key);
 
   @override
-  State<UpdateProfile> createState() => _UpdateProfileState();
+  State<UserUpdateProfile> createState() => _UserUpdateProfileState();
 }
 
-class _UpdateProfileState extends State<UpdateProfile> {
+class _UserUpdateProfileState extends State<UserUpdateProfile> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(

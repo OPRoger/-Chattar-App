@@ -17,7 +17,7 @@ class ProfileController extends GetxController{
 
   Future<void> getUserDetails() async{
     await db.collection("users").doc(auth.currentUser!.uid).get().then((value) => {
-      currentUser.value = UserModel.fromJson(value.data()!)
+      currentUser.value = UserModel.fromJson(value.data())
     });
   }
 }
