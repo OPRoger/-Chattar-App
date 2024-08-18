@@ -1,3 +1,4 @@
+import 'package:chat_application/controller/profile_Controller.dart';
 import 'package:chat_application/pages/Home_Page/widgets/Tab_Bar.dart';
 import 'package:chat_application/pages/Home_Page/widgets/chat_list_View.dart';
 import 'package:chat_application/profilePage/profile_Page.dart';
@@ -14,6 +15,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
+    ProfileController profileController = Get.put(ProfileController());
     TabController tabController = TabController(length: 3, vsync: this);
     return Scaffold(
         appBar: AppBar(
@@ -28,8 +30,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           ),
           actions: [
             IconButton(onPressed: () {}, icon: Icon(Icons.search)),
-            IconButton(onPressed: () {
+            IconButton(onPressed: () async{
               // Get.toNamed("/userprofilePage")
+             await profileController.getUserDetails();
               Get.to(ProfilePage());
             }, icon: Icon(Icons.more_vert)),
           ],

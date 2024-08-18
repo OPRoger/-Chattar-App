@@ -1,3 +1,7 @@
+import 'dart:io';
+
+import 'package:chat_application/controller/Auth_Controller.dart';
+import 'package:chat_application/controller/image_Picker_Controller.dart';
 import 'package:chat_application/controller/profile_Controller.dart';
 import 'package:chat_application/widget/primaryButton.dart';
 import 'package:flutter/material.dart';
@@ -13,12 +17,10 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<ProfilePage> {
   RxBool isEdit = false.obs;
   ProfileController profileController = Get.put(ProfileController());
-
-
-  TextEditingController name = TextEditingController(text: "amit" );
-  TextEditingController email = TextEditingController(text: "example@gmail.com");
-  TextEditingController phone = TextEditingController(text: "012345678");
-  TextEditingController about = TextEditingController(text: "all is well");
+  AuthController authController = Get.put(AuthController());
+  ImagePickerController imagePickerController =
+      Get.put(ImagePickerController());
+  RxString imagePath = "".obs;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -27,6 +29,13 @@ class _ProfilePageState extends State<ProfilePage> {
           "Profile",
           style: Theme.of(context).textTheme.headlineSmall,
         ),
+        actions: [
+          IconButton(
+              onPressed: () {
+                authController.logoutUser();
+              },
+              icon: Icon(Icons.logout))
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -43,21 +52,61 @@ class _ProfilePageState extends State<ProfilePage> {
                   Expanded(
                     child: Column(
                       children: [
-
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            CircleAvatar(
-                              child: Container(
-                                alignment: Alignment.bottomRight,
-                                child:
-                                  Obx(() => isEdit.value
-                                      ? InkWell(onTap: (){},child: Icon(Icons.add_a_photo))
-                                      : Container()),
-
-                              ),
-                              radius: 50,
-                            )
+                            Obx(() => isEdit.value
+                                ? InkWell(
+                                    onTap: () async {
+                                      imagePath.value =
+                                          await imagePickerController
+                                              .pickImage();
+                                    },
+                                    child: Container(
+                                      height: 100,
+                                      width: 100,
+                                      decoration: BoxDecoration(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .background,
+                                        borderRadius:
+                                            BorderRadius.circular(100),
+                                      ),
+                                      child: imagePath.value == ""
+                                          ? Icon(Icons.add_a_photo)
+                                          : ClipRRect(
+                                              borderRadius:
+                                                  BorderRadius.circular(100),
+                                              child: Image.file(
+                                                File(imagePath.value),
+                                                fit: BoxFit.cover,
+                                              )),
+                                    ))
+                                : Container(
+                                    height: 100,
+                                    width: 100,
+                                    decoration: BoxDecoration(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .background,
+                                      borderRadius: BorderRadius.circular(100),
+                                    ),
+                                    child: profileController.currentUser.value
+                                                    .profileImage ==
+                                                "" ||
+                                            profileController.currentUser.value
+                                                    .profileImage ==
+                                                null
+                                        ? Icon(Icons.image)
+                                        : ClipRRect(
+                                            borderRadius:
+                                                BorderRadius.circular(100),
+                                            child: Image.network(
+                                              profileController.currentUser
+                                                  .value.profileImage!,
+                                              fit: BoxFit.cover,
+                                            ),
+                                          )))
                           ],
                         ),
                         SizedBox(
@@ -65,7 +114,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         ),
                         Obx(
                           () => TextField(
-                            controller: name,
+                            controller: profileController.name,
                             enabled: isEdit.value,
                             decoration: InputDecoration(
                               labelText: "name",
@@ -79,7 +128,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         ),
                         Obx(
                           () => TextField(
-                            controller: about,
+                            controller: profileController.name,
                             enabled: isEdit.value,
                             decoration: InputDecoration(
                               labelText: "about",
@@ -92,7 +141,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           height: 20,
                         ),
                         TextField(
-                          controller: email,
+                          controller: profileController.email,
                           enabled: false,
                           decoration: InputDecoration(
                             labelText: "email",
@@ -105,7 +154,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         ),
                         Obx(
                           () => TextField(
-                            controller: phone,
+                            controller: profileController.phone,
                             enabled: isEdit.value,
                             decoration: InputDecoration(
                               labelText: "phone no.",
@@ -125,7 +174,11 @@ class _ProfilePageState extends State<ProfilePage> {
                                   ? PrimaryButton(
                                       BtName: "Save",
                                       icon: Icons.save_alt,
-                                      ontap: () {
+                                      ontap: () async {
+                                        await profileController.updateProfile(
+                                          imagePath.value,
+                                        );
+
                                         isEdit.value = false;
                                       })
                                   : PrimaryButton(
