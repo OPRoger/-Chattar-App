@@ -39,7 +39,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           bottom: myTabBar(tabController, context),
         ),
         floatingActionButton: FloatingActionButton(
-          onPressed: () {},
+          onPressed: () {
+            Get.toNamed("/contactPage");
+          },
           child: Icon(
             Icons.add,
             color: Theme.of(context).colorScheme.onBackground,
