@@ -1,9 +1,13 @@
 import 'package:chat_application/Model/userModel.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class ContactController extends GetxController {
+
+
+
   final db = FirebaseFirestore.instance;
   final auth = FirebaseAuth.instance;
   RxBool isLoading = false.obs;
@@ -30,6 +34,5 @@ class ContactController extends GetxController {
     }
     isLoading.value = false;
   }
-
 
 }

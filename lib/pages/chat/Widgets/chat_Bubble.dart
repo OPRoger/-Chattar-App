@@ -43,7 +43,7 @@ class ChatBubble extends StatelessWidget {
 
               ),
               child: imageUrl == ""
-                  ?const Text("hi its a chat box")
+                  ? Text(message)
                   : Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                       children: [

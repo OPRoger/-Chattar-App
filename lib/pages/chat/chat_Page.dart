@@ -1,17 +1,21 @@
+import 'package:chat_application/Model/chatModel.dart';
+import 'package:chat_application/Model/userModel.dart';
+import 'package:chat_application/controller/chat_Controller.dart';
+import 'package:chat_application/controller/profile_Controller.dart';
 import 'package:chat_application/pages/chat/Widgets/chat_Bubble.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 
-class ChatPage extends StatefulWidget {
-  const ChatPage({Key? key}) : super(key: key);
+class ChatPage extends StatelessWidget {
+  final UserModel userModel;
+  const ChatPage({Key? key, required this.userModel}) : super(key: key);
 
-  @override
-  State<ChatPage> createState() => _ChatPageState();
-}
-
-class _ChatPageState extends State<ChatPage> {
   @override
   Widget build(BuildContext context) {
+    ProfileController profileController = Get.put(ProfileController());
+    ChatController chatController = Get.put(ChatController());
     return Scaffold(
       appBar: AppBar(
         leading: Padding(
@@ -22,7 +26,7 @@ class _ChatPageState extends State<ChatPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              "Amit Kumar",
+              userModel.name!,
               style: Theme.of(context).textTheme.bodyLarge,
             ),
             Text(
@@ -41,80 +45,88 @@ class _ChatPageState extends State<ChatPage> {
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: Container(
         margin: EdgeInsets.all(10),
-        padding: EdgeInsets.symmetric(horizontal: 15,vertical: 5),
+        padding: EdgeInsets.symmetric(horizontal: 15, vertical: 5),
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(100),
-              color: Theme.of(context).colorScheme.primaryContainer
-        ),
+            borderRadius: BorderRadius.circular(100),
+            color: Theme.of(context).colorScheme.primaryContainer),
         child: Row(
           children: [
-            Container(
-                width: 30,
-                child: Icon(Icons.mic)),
-            SizedBox(width: 10,),
-            Expanded(child: TextField(
-              decoration: InputDecoration(
-                filled: false,
-                hintText: "Type message here"
-
-              ),
+            Container(width: 30, child: Icon(Icons.mic)),
+            SizedBox(
+              width: 10,
+            ),
+            Expanded(
+                child: TextField(
+              controller: chatController.messageController,
+              decoration:
+                  InputDecoration(filled: false, hintText: "Type message here"),
             )),
-            SizedBox(width: 10,),
-            Container(child: Image.asset("assets/Icons/gallery.png",color: Colors.white,)),
-            SizedBox(width: 10,),
-            Container(child: Image.asset("assets/Icons/right_arrow.png",color: Colors.white,width: 40,)),
+            SizedBox(
+              width: 10,
+            ),
+            Container(
+                child: Image.asset(
+              "assets/Icons/gallery.png",
+              color: Colors.white,
+            )),
+            SizedBox(
+              width: 10,
+            ),
+            InkWell(
+                onTap: () {
+                  if (chatController.messageController.text.isNotEmpty) {
+                    chatController.sendMessages(
+                        userModel.id!, chatController.messageController.text);
+                    chatController.messageController.clear();
+                  }
+                },
+                child: Container(
+                    child: Image.asset(
+                  "assets/Icons/right_arrow.png",
+                  color: Colors.white,
+                  width: 40,
+                ))),
           ],
         ),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: ListView(
-          children: [
-            ChatBubble(
-                message: "hi I'm coming",
-                time: "09:33 PM",
-                status: "read",
-                imageUrl: "",
-                isComing: true),
-            ChatBubble(
-                message: "hi I'm coming",
-                time: "09:33 PM",
-                status: "read",
-                imageUrl: "",
-                isComing: true),
-            ChatBubble(
-                message: "hi I'm coming",
-                time: "09:33 PM",
-                status: "read",
-                imageUrl: "https://www.mindinventory.com/blog/wp-content/uploads/2022/10/flutter-3.png",
-                isComing: false),
-            ChatBubble(
-                message: "hi I'm coming",
-                time: "09:33 PM",
-                status: "read",
-                imageUrl: "",
-                isComing: true),
-            ChatBubble(
-                message: "hi I'm coming",
-                time: "09:33 PM",
-                status: "read",
-                imageUrl: "https://www.mindinventory.com/blog/wp-content/uploads/2022/10/flutter-3.png",
-                isComing: false),
-            ChatBubble(
-                message: "hi I'm coming",
-                time: "09:33 PM",
-                status: "read",
-                imageUrl: "",
-                isComing: true),
-            ChatBubble(
-                message: "hi I'm coming",
-                time: "09:33 PM",
-                status: "read",
-                imageUrl: "https://www.mindinventory.com/blog/wp-content/uploads/2022/10/flutter-3.png",
-                isComing: false),
-          ],
-        ),
-      ),
+          padding:
+              const EdgeInsets.only(bottom: 80.0, top: 10, left: 10, right: 10),
+          child: StreamBuilder<List<ChatModel>>(
+            stream: chatController.getMessages(userModel.id!),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return Center(
+                  child: CircularProgressIndicator(),
+                );
+              }
+              if (snapshot.hasError) {
+                return Center(
+                  child: Text("Error : ${snapshot.error}"),
+                );
+              }
+              if (snapshot.data == null) {
+                return Center(
+                  child: Text("No messages"),
+                );
+              } else {
+                return ListView.builder(
+                    reverse: true,
+                    itemCount: snapshot.data!.length,
+                    itemBuilder: (context, index) {
+                      DateTime timestamp = DateTime.parse(snapshot.data![index].timestamp!);
+                      String formattedTime = DateFormat('hh:mm:a').format(timestamp);
+                      return ChatBubble(
+                          message: snapshot.data![index].message!,
+                          time: formattedTime,
+                          status: "read",
+                          imageUrl: snapshot.data![index].imageUrl ?? "",
+                          isComing: snapshot.data![index].senderId !=
+                              profileController.currentUser.value.id!);
+                    });
+              }
+            },
+          )),
     );
   }
 }

@@ -15,10 +15,10 @@ var Routes = [
       name: "/homePage",
       page: () => HomePage(),
       transition: Transition.rightToLeft),
-  GetPage(
-      name: "/chatPage",
-      page: () => ChatPage(),
-      transition: Transition.rightToLeft),
+  // GetPage(
+  //     name: "/chatPage",
+  //     page: () => ChatPage(),
+  //     transition: Transition.rightToLeft),
   GetPage(
       name: "/userprofilePage",
       page: () => UserProfilePage(),

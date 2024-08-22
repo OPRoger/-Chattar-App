@@ -1,7 +1,9 @@
+import 'package:chat_application/controller/chat_Controller.dart';
 import 'package:chat_application/controller/contact_Controller.dart';
 import 'package:chat_application/pages/Contact_Page/widgets/contactSearchField.dart';
 import 'package:chat_application/pages/Contact_Page/widgets/newContactTile.dart';
 import 'package:chat_application/pages/Home_Page/widgets/Chat_tile.dart';
+import 'package:chat_application/pages/chat/chat_Page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -14,6 +16,7 @@ class ContactPage extends StatefulWidget {
 
 class _ContactPageState extends State<ContactPage> {
   ContactController contactController = Get.put(ContactController());
+  ChatController chatController = Get.put(ChatController());
   @override
   Widget build(BuildContext context) {
     RxBool isSearchEnable = false.obs;
@@ -45,7 +48,9 @@ class _ContactPageState extends State<ContactPage> {
               SizedBox(height: 15,),
               Obx(() => Column(children: contactController.userList.map((e) => InkWell(
                 onTap: (){
-                  Get.toNamed("/chatPage");
+                  Get.to(ChatPage(userModel: e,));
+                // String roomId = chatController.getRoomId(e.id!);
+                // print(roomId);
                 },
                 child: ChatTile(
                     imageUrl: e.profileImage ?? "assets/Images/boy.png" ,
