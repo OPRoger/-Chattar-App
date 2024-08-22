@@ -56,7 +56,7 @@ class _UserUpdateProfileState extends State<UserUpdateProfile> {
                           textInputAction: TextInputAction.next,
                           decoration: InputDecoration(
                             prefixIcon: Icon(Icons.person),
-                            hintText: "amit"
+                            hintText: "user name"
                           ),
                         ),
                         SizedBox(height: 15,),

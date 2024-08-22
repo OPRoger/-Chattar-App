@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 class ChatTile extends StatelessWidget {
@@ -32,11 +33,12 @@ class ChatTile extends StatelessWidget {
                     height: 60,
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(100),
-                      child: Image.asset(
-                  imageUrl,
-                  width: 50,
+                      child: CachedNetworkImage(
+                        imageUrl: imageUrl,
                         fit: BoxFit.cover,
-                ),
+                        placeholder: (context,url)=> CircularProgressIndicator(),
+                        errorWidget: (context,url,error)=> Icon(Icons.error),
+                      ),
                     )),
                 SizedBox(
                   width: 20,

@@ -1,4 +1,6 @@
 import 'package:chat_application/Model/chatModel.dart';
+import 'package:chat_application/Model/chatRoom_Model.dart';
+import 'package:chat_application/Model/userModel.dart';
 import 'package:chat_application/controller/profile_Controller.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -26,7 +28,8 @@ class ChatController extends GetxController {
     }
   }
 
-  Future<void> sendMessages(String targetUserId, String message) async {
+  Future<void> sendMessages(
+      String targetUserId, String message, UserModel targetUser) async {
     isLoading.value = true;
     String roomId = getRoomId(targetUserId);
     String chatId = uuid.v6();
@@ -38,7 +41,20 @@ class ChatController extends GetxController {
       senderName: profileController.currentUser.value.name,
       timestamp: DateTime.now().toString(),
     );
+
+    var roomDetails = ChatRoomModel(
+      id: roomId,
+      lastMessage: message,
+      lastMessageTimestamp: DateTime.now().toString(),
+      sender: profileController.currentUser.value,
+      receiver: targetUser,
+      timestamp: DateTime.now().toString(),
+      unReadMessNo: 0,
+    );
+
     try {
+      await db.collection("chats").doc(roomId).set(roomDetails.toJson());
+
       await db
           .collection("chats")
           .doc(roomId)
@@ -62,8 +78,8 @@ class ChatController extends GetxController {
         .orderBy("timestamp", descending: true)
         .snapshots()
         .map((snapshot) => snapshot.docs
-        .map((doc) => ChatModel.fromJson(doc.data() as Map<String, dynamic>))
-        .toList());
+            .map(
+                (doc) => ChatModel.fromJson(doc.data() as Map<String, dynamic>))
+            .toList());
   }
-
 }

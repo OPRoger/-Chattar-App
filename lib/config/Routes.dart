@@ -1,4 +1,5 @@
 import 'package:chat_application/Userprofile/profile_Page.dart';
+import 'package:chat_application/Userprofile/widget/profile_userInfo.dart';
 import 'package:chat_application/pages/Auth/auth_page.dart';
 import 'package:chat_application/pages/Auth/widgets/update_profile.dart';
 import 'package:chat_application/pages/Contact_Page/contact_page.dart';
@@ -19,10 +20,10 @@ var Routes = [
   //     name: "/chatPage",
   //     page: () => ChatPage(),
   //     transition: Transition.rightToLeft),
-  GetPage(
-      name: "/userprofilePage",
-      page: () => UserProfilePage(),
-      transition: Transition.rightToLeft),
+  // GetPage(
+  //     name: "/userprofilePage",
+  //     page: () => UserProfilePage(),
+  //     transition: Transition.rightToLeft),
   GetPage(
       name: "/userupdateProfilePage",
       page: () => UserUpdateProfile(),

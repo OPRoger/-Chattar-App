@@ -2,18 +2,17 @@ import 'package:chat_application/controller/profile_Controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class ProfileUserInfo extends StatefulWidget {
-  const ProfileUserInfo({Key? key}) : super(key: key);
+class LoginUserInfo extends StatelessWidget {
+  final String profileImage;
+  final String userName;
+  final String userEmail;
+  const LoginUserInfo({Key? key, required this.profileImage, required this.userName, required this.userEmail}) : super(key: key);
 
-  @override
-  State<ProfileUserInfo> createState() => _ProfileUserInfoState();
-}
-
-class _ProfileUserInfoState extends State<ProfileUserInfo> {
   @override
   Widget build(BuildContext context) {
     ProfileController profileController = Get.put(ProfileController());
     return Container(
+
       padding: EdgeInsets.all(20),
       // height: 200,
       decoration: BoxDecoration(
@@ -27,37 +26,47 @@ class _ProfileUserInfoState extends State<ProfileUserInfo> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Image.asset(
-                      "assets/Images/boy.png",
-                      width: 100,
+                    Container(
+                      height: 180,
+                      width: 180,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(100),
+                        child: Image.network(
+                          profileImage,
+                          width: 100,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                      decoration: BoxDecoration(
+                          color: Theme.of(context).colorScheme.background,
+                          borderRadius: BorderRadius.circular(100)
+                      ),
                     )
                   ],
                 ),
                 SizedBox(
                   height: 15,
                 ),
-                Obx(() => Row(
+                Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                        profileController.currentUser.value.name! == null
-                            ? "Users"
-                            : profileController.currentUser.value.name!,
+                        userName,
                         style: Theme.of(context).textTheme.bodyLarge),
                   ],
-                ),),
+                ),
                 SizedBox(
                   height: 5,
                 ),
-                Obx(() => Row(
+                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      profileController.currentUser.value.email!,
+                      userEmail,
                       style: Theme.of(context).textTheme.labelMedium,
                     ),
                   ],
-                ),),
+                ),
                 SizedBox(
                   height: 40,
                 ),
@@ -135,5 +144,7 @@ class _ProfileUserInfoState extends State<ProfileUserInfo> {
         ],
       ),
     );
+
   }
 }
+

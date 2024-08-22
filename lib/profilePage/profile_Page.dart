@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chat_application/controller/Auth_Controller.dart';
 import 'package:chat_application/controller/image_Picker_Controller.dart';
 import 'package:chat_application/controller/profile_Controller.dart';
@@ -101,12 +102,17 @@ class _ProfilePageState extends State<ProfilePage> {
                                         : ClipRRect(
                                             borderRadius:
                                                 BorderRadius.circular(100),
-                                            child: Image.network(
-                                              profileController.currentUser
+                                            child: CachedNetworkImage(
+                                             imageUrl: profileController.currentUser
                                                   .value.profileImage!,
                                               fit: BoxFit.cover,
-                                            ),
-                                          )))
+                                              placeholder: (context,url)=> CircularProgressIndicator(),
+                                              errorWidget: (context,url,error)=> Icon(Icons.error),
+                                            )
+
+                                    ),
+
+                            ))
                           ],
                         ),
                         SizedBox(
@@ -128,7 +134,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         ),
                         Obx(
                           () => TextField(
-                            controller: profileController.name,
+                            controller: profileController.about,
                             enabled: isEdit.value,
                             decoration: InputDecoration(
                               labelText: "about",
