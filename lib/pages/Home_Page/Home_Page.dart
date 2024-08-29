@@ -1,3 +1,4 @@
+import 'package:chat_application/controller/contact_Controller.dart';
 import 'package:chat_application/controller/profile_Controller.dart';
 import 'package:chat_application/pages/Home_Page/widgets/Tab_Bar.dart';
 import 'package:chat_application/pages/Home_Page/widgets/chat_list_View.dart';
@@ -16,6 +17,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     ProfileController profileController = Get.put(ProfileController());
+    ContactController contactController = Get.put(ContactController());
     TabController tabController = TabController(length: 3, vsync: this);
     return Scaffold(
         appBar: AppBar(
@@ -29,7 +31,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             child: Image.asset("assets/Icons/AppIcon.png"),
           ),
           actions: [
-            IconButton(onPressed: () {}, icon: Icon(Icons.search)),
+            IconButton(onPressed: () {
+              contactController.getChatRoomList();
+            }, icon: Icon(Icons.search)),
             IconButton(onPressed: () async{
               // Get.toNamed("/userprofilePage")
              await profileController.getUserDetails();

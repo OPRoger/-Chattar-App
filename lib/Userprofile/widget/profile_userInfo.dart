@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chat_application/controller/profile_Controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -31,11 +32,14 @@ class LoginUserInfo extends StatelessWidget {
                       width: 180,
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(100),
-                        child: Image.network(
-                          profileImage,
-                          width: 100,
+                        child:
+                        CachedNetworkImage(
+                          imageUrl: profileController.currentUser
+                              .value.profileImage!,
                           fit: BoxFit.cover,
-                        ),
+                          placeholder: (context,url)=> CircularProgressIndicator(),
+                          errorWidget: (context,url,error)=> Icon(Icons.error),
+                        )
                       ),
                       decoration: BoxDecoration(
                           color: Theme.of(context).colorScheme.background,

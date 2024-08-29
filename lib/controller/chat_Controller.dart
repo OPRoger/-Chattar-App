@@ -7,6 +7,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:uuid/uuid.dart';
 
 class ChatController extends GetxController {
@@ -32,6 +33,10 @@ class ChatController extends GetxController {
       String targetUserId, String message, UserModel targetUser) async {
     isLoading.value = true;
     String roomId = getRoomId(targetUserId);
+    DateTime timestamp =
+    DateTime.now();
+    String nowTime =
+    DateFormat('hh:mm:a').format(timestamp);
     String chatId = uuid.v6();
     var newChat = ChatModel(
       message: message,
@@ -45,7 +50,7 @@ class ChatController extends GetxController {
     var roomDetails = ChatRoomModel(
       id: roomId,
       lastMessage: message,
-      lastMessageTimestamp: DateTime.now().toString(),
+      lastMessageTimestamp: nowTime,
       sender: profileController.currentUser.value,
       receiver: targetUser,
       timestamp: DateTime.now().toString(),

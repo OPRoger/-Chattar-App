@@ -1,4 +1,6 @@
+import 'package:chat_application/controller/contact_Controller.dart';
 import 'package:chat_application/pages/Home_Page/widgets/Chat_tile.dart';
+import 'package:chat_application/pages/chat/chat_Page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -7,57 +9,23 @@ class ChatListView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
+    ContactController contactController = Get.put(ContactController());
+    return RefreshIndicator(child: Obx(() => Padding(
       padding: const EdgeInsets.all(16.0),
       child: ListView(
-        children: [
-          InkWell(
+          children: contactController.chatRoomList.map((e) =>InkWell(
             onTap: (){
-              Get.toNamed("/chatPage");
+              Get.to(ChatPage(userModel: e.receiver!));
             },
             child: ChatTile(
-                imageUrl: "assets/Images/boy.png",
-                name: "Amit kumar",
-                lastChat: "baad m baat krte h ",
-                lastTime: "08:33 PM"),
-          ),
-          ChatTile(
-              imageUrl: "assets/Images/boy.png",
-              name: "Amit kumar",
-              lastChat: "baad m baat krte h ",
-              lastTime: "08:33 PM"),
-          ChatTile(
-              imageUrl: "assets/Images/girl.png",
-              name: "Amit kumar",
-              lastChat: "baad m baat krte h ",
-              lastTime: "08:33 PM"),
-          ChatTile(
-              imageUrl: "assets/Images/boy.png",
-              name: "Amit kumar",
-              lastChat: "baad m baat krte h ",
-              lastTime: "08:33 PM"),
-          ChatTile(
-              imageUrl: "assets/Images/girl.png",
-              name: "Amit kumar",
-              lastChat: "baad m baat krte h ",
-              lastTime: "08:33 PM"),
-          ChatTile(
-              imageUrl: "assets/Images/boy.png",
-              name: "Amit kumar",
-              lastChat: "baad m baat krte h ",
-              lastTime: "08:33 PM"),
-          ChatTile(
-              imageUrl: "assets/Images/girl.png",
-              name: "Amit kumar",
-              lastChat: "baad m baat krte h ",
-              lastTime: "08:33 PM"),
-          ChatTile(
-              imageUrl: "assets/Images/boy.png",
-              name: "Amit kumar",
-              lastChat: "baad m baat krte h ",
-              lastTime: "08:33 PM"),
-        ],
+                imageUrl:  e.receiver!.profileImage ?? "assets/Images/boy.png",
+                name: e.receiver!.name ?? "user",
+                lastChat: e.lastMessage ?? "last message",
+                lastTime: e.lastMessageTimestamp ?? ""),
+          ) ).toList()
       ),
-    );
+    )), onRefresh: ()async{
+      return contactController.getChatRoomList();
+    });
   }
 }
